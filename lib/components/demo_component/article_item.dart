@@ -19,9 +19,9 @@ class ArticleItem extends StatelessWidget {
       padding: EdgeInsets.only(top: 10.0, right: 20.0, left: 10.0),
       child: Column(
         children: <Widget>[
-          CommonHeader(userName: article.author),
+          CommonHeader(userName: article.author, updateTime: article.updateTime),
           CommonContent(content: article.content),
-          CommonFooter()
+          CommonFooter(commentsLength: article.commentsLength, articleId: article.articleId)
         ],
       ),
     );

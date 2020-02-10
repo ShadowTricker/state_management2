@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 
 class CommonFooter extends StatelessWidget {
 
+  final int commentsLength;
+  final int articleId;
+
+  CommonFooter({
+    this.commentsLength,
+    this.articleId
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,7 +19,7 @@ class CommonFooter extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            '3 Comments',
+            '$commentsLength Comments',
             style: TextStyle(
               color: Colors.blueGrey,
               fontSize: 15.0
@@ -30,7 +38,7 @@ class CommonFooter extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(
                 '/redux-details',
-                arguments: 1
+                arguments: articleId
               );
             },
           )

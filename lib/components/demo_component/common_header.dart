@@ -4,10 +4,12 @@ class CommonHeader extends StatelessWidget {
 
   final bool hideAvatar;
   final String userName;
+  final String updateTime;
 
   CommonHeader({
     this.hideAvatar = false,
-    this.userName
+    this.userName,
+    this.updateTime
   });
 
   @override
@@ -40,7 +42,7 @@ class CommonHeader extends StatelessWidget {
         ),
         Container(
           child: Text(
-            '1991-02-26',
+            updateTime,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black45

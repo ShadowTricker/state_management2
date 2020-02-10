@@ -1,9 +1,10 @@
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:state_management2/components/demo_component/flutter_logo.dart';
 import 'package:state_management2/services/http_service.dart';
+
+import 'models/article_model.dart';
+import 'models/comment_model.dart';
 
 class ManagementReduxLoginPage extends StatefulWidget {
 
@@ -72,7 +73,9 @@ class _ManagementReduxLoginPageState extends State<ManagementReduxLoginPage> {
         )),
         onPressed: () async {
           print(_loginTextController.text);
-          final ResultData articles = await widget.http.get();
+          final List<Article> articles = await widget.http.getArticles();
+          final List<Comment> comments = await widget.http.getComments(1);
+          print(comments);
           Navigator.of(context).pushReplacementNamed('/redux-articles', arguments: articles);
         },
         color: Colors.blue,
