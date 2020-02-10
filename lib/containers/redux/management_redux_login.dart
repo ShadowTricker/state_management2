@@ -8,8 +8,6 @@ import 'models/comment_model.dart';
 
 class ManagementReduxLoginPage extends StatefulWidget {
 
-  final HttpService http = HttpService();
-
   @override
   _ManagementReduxLoginPageState createState() => _ManagementReduxLoginPageState();
 
@@ -73,8 +71,8 @@ class _ManagementReduxLoginPageState extends State<ManagementReduxLoginPage> {
         )),
         onPressed: () async {
           print(_loginTextController.text);
-          final List<Article> articles = await widget.http.getArticles();
-          final List<Comment> comments = await widget.http.getComments(1);
+          final List<Article> articles = await HttpService.getArticles();
+          final List<Comment> comments = await HttpService.getComments(1);
           print(comments);
           Navigator.of(context).pushReplacementNamed('/redux-articles', arguments: articles);
         },

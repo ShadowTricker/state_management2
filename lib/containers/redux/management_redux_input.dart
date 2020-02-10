@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:state_management2/services/http_service.dart';
 
 class ManagementReduxInputPage extends StatefulWidget {
 
@@ -12,6 +13,8 @@ class ManagementReduxInputPage extends StatefulWidget {
 }
 
 class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
+
+  TextEditingController _itemController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +45,26 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
   Widget commentInput() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      child: TextField(
-        autofocus: false,
-        maxLines: 8,
-        maxLength: widget.pageType == 'Article' ? 1000 : 100,
-        maxLengthEnforced: true,
-        decoration: InputDecoration(
-          hintText: 'Input your ${ widget.pageType.toLowerCase() }',
-        )
-      ),
+      child: Form(
+        autovalidate: true,
+        child: TextFormField(
+          controller: _itemController,
+          autofocus: false,
+          maxLines: 8,
+          maxLength: widget.pageType == 'Article' ? 1000 : 100,
+          maxLengthEnforced: true,
+          decoration: InputDecoration(
+            hintText: 'Input your ${ widget.pageType.toLowerCase() }',
+          ),
+          validator: (v) {
+            if (v.trim().isEmpty) {
+              return 'Empty';
+            }
+            return null;
+          }
+        ),
+      )
+      
     );
   }
 
@@ -65,8 +79,24 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
             fontSize: 20.0
           )),
         ),
-        onTap: () {
-          print('Submit');
+        onTap: () async {
+          final Map<String, String> newItem = {
+            'author': 'shadow-tricker',
+            'content': _itemController.text,
+            if (widget.pageType == 'Article') 'title': '临时添加',
+            if (widget.pageType == 'Comment') 'articleId': '1'
+          };
+          bool isSuccess = false;
+          if (widget.pageType == 'Article') {
+            isSuccess = await HttpService.addArticle(newItem);
+          }
+          else {
+            isSuccess = await HttpService.addComment(newItem);
+          }
+          if(isSuccess) {
+            Navigator.of(context).pop();
+          } 
+          print(newItem);
         },
       ),
       decoration: BoxDecoration(

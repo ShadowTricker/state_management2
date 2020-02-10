@@ -1,15 +1,17 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:state_management2/containers/redux/models/article_model.dart';
 import 'package:state_management2/containers/redux/models/comment_model.dart';
 
 class HttpService {
 
-  Dio dio = Dio();
-  Options options;
+  static final String ip = '192.168.0.100';
 
+  static Dio dio = Dio();
+  
+
+  /* Options options;
   get() async {
-    /* Map<String, String> headers = HashMap();
+    Map<String, String> headers = HashMap();
     headers['Content-Type'] = 'application/json';
     options = Options(method: 'get');
     options.headers = headers;
@@ -22,24 +24,46 @@ class HttpService {
       print(response.data);
     } catch(e) {
       print(e.message);
-    } */
-  }
+    }
+  } */
 
-  getArticles() async {
-    final response = await dio.get('http://10.243.27.196:4004/article-list');
+  static Future<List<Article>> getArticles() async {
+    final response = await HttpService.dio.get('http://$ip:4004/article-list');
     final ResultData resultData = ResultData(response.data['data']);
     final List<Article> articles = resultData.data.map<Article>((data) => Article.fromJson(data)).toList();
     return articles;
   }
 
-  getComments(int articleId) async {
-    final response = await dio.post(
-      'http://10.243.27.196:4004/comment-list',
+  static Future<List<Comment>> getComments(int articleId) async {
+    final response = await HttpService.dio.post(
+      'http://$ip:4004/comment-list',
       data: { 'articleId': articleId }
     );
     final ResultData resultData = ResultData(response.data['data']);
     final List<Comment> comments = resultData.data.map<Comment>((data) => Comment.fromJson(data)).toList();
     return comments;
+  }
+
+  static Future<bool> addArticle(Map<String, String> newArticle) async {
+    final response = await HttpService.dio.post(
+      'http://$ip:4004/article/add',
+      data: newArticle
+    );
+    if (response.data['status'] == 'SUCCESS') {
+      return true;
+    }
+    return false;
+  }
+
+  static Future<bool> addComment(Map<String, String> newComment) async {
+    final response = await HttpService.dio.post(
+      'http://$ip:4004/comment/add',
+      data: newComment
+    );
+    if (response.data['status'] == 'SUCCESS') {
+      return true;
+    }
+    return false;
   }
 }
 
