@@ -42,7 +42,7 @@ class _WithStateReduxWidgetState extends State<WithStateReduxWidget> {
                   ),
                 ),
                 StoreConnector<int, VoidCallback>(
-                  converter: (store) => () => store.dispatch(CounterEvent.increment),
+                  converter: (store) => () => store.dispatch(CounterEvent.decrement),
                   builder: (context, callback) => _buildButton(
                     buttonColor: Colors.blue,
                     fontColor: Colors.white,
