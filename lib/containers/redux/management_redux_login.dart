@@ -1,8 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:state_management2/components/demo_component/flutter_logo.dart';
+import 'package:state_management2/containers/redux/store/app_state.dart';
 import 'package:state_management2/services/http_service.dart';
 
+import 'actions/fetch_articles.dart';
 import 'models/article_model.dart';
 import 'models/comment_model.dart';
 
@@ -60,7 +63,7 @@ class _ManagementReduxLoginPageState extends State<ManagementReduxLoginPage> {
     );
   }
 
-  Widget buttonArea() {
+  /* Widget buttonArea() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0),
       child: RaisedButton(
@@ -78,6 +81,31 @@ class _ManagementReduxLoginPageState extends State<ManagementReduxLoginPage> {
         },
         color: Colors.blue,
       ),
+    );
+  } */
+
+  Widget buttonArea() {
+    return StoreConnector<AppState, VoidCallback>(
+      converter: (store) {
+        return () => store.dispatch(getArticles(3));
+      },
+      builder: (context, callback) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: RaisedButton(
+            padding: EdgeInsets.symmetric(horizontal: 131.0, vertical: 12.0),
+            child: Text('Login', style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0
+            )),
+            onPressed: () {
+              callback();
+              Navigator.of(context).pushReplacementNamed('/redux-articles');
+            },
+            color: Colors.blue,
+          ),
+        );
+      },
     );
   }
 

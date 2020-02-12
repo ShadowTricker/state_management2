@@ -1,15 +1,17 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:state_management2/components/demo_component/article_item.dart';
 import 'package:state_management2/components/demo_component/drawer_component.dart';
+import 'package:state_management2/containers/redux/store/app_state.dart';
 
 import 'models/article_model.dart';
 
 class ManagementReduxArticlesPage extends StatefulWidget {
 
-  final List<Article> articleList;
+  // final List<Article> articleList;
 
-  ManagementReduxArticlesPage(this.articleList);
+  // ManagementReduxArticlesPage(this.articleList);
 
   @override
   _ManagementReduxArticlesPageState createState() => _ManagementReduxArticlesPageState();
@@ -43,7 +45,7 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
 
   Widget _buildBody() {
 
-    return Container(
+    /* return Container(
       child: ListView.separated(
         padding: EdgeInsets.only(left: 16.0),
         itemCount: widget.articleList.length,
@@ -55,21 +57,27 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
           color: Colors.black26,
         )
       ),
-    );
-
-    /* return Container(
-      child: ListView.separated(
-        padding: EdgeInsets.only(left: 16.0),
-        itemCount: 10,
-        itemBuilder: (BuildContext context, int index) {
-          return ArticleItem();
-        },
-        separatorBuilder: (BuildContext context, int index) => Divider(
-          height: 0.5,
-          color: Colors.black26,
-        )
-      ),
     ); */
+
+    return StoreConnector<AppState, List<Article>>(
+      converter: (store) => store.state.articles,
+      builder: (context, articles) {
+        print(articles);
+        return Container(
+          child: ListView.separated(
+            padding: EdgeInsets.only(left: 16.0),
+            itemCount: articles.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ArticleItem(articles[index]);
+            },
+            separatorBuilder: (BuildContext context, int index) => Divider(
+              height: 0.5,
+              color: Colors.black26,
+            )
+          ),
+        );
+      },
+    );
   }
 
   void _logout() {

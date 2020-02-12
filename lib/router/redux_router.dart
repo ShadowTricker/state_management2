@@ -8,7 +8,7 @@ Map<String, WidgetBuilder> reduxRoutes(BuildContext context) {
   return {
     '/redux-login': (context) => ManagementReduxLoginPage(),
     '/redux-articles': (context) => ManagementReduxArticlesPage(
-      ModalRoute.of(context).settings.arguments
+      // ModalRoute.of(context).settings.arguments
     ),
     '/redux-details': (context) => ManagementReduxCommentsPage(),
     '/redux-submit': (context) => ManagementReduxInputPage(
