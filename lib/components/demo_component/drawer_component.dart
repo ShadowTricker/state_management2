@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class DrawerComponent extends StatelessWidget {
 
   final dynamic logout;
+  final String author;
 
-  DrawerComponent({ @required this.logout });
+  DrawerComponent({ @required this.logout, @required this.author });
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,7 @@ class DrawerComponent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '123',
+                      author,
                       style: TextStyle(
                       fontSize: 24.0,
                       color: Colors.blueGrey
@@ -70,7 +71,6 @@ class DrawerComponent extends StatelessWidget {
                   ],
                 ),
               )
-              
             )
           ],
         )

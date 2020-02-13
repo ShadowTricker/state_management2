@@ -25,7 +25,7 @@ class FetchArticlesFailedAction {
   };
 } */
 
-ThunkAction<AppState> getArticles(int secondsToWait) {
+ThunkAction<AppState> getArticles() {
   return (Store<AppState> store) async {
     final List<Article> articles = await HttpService.getArticles();
     store.dispatch(FetchArticlesSucceedAction(articles));

@@ -7,7 +7,6 @@ class HttpService {
   static final String ip = '192.168.0.100';
 
   static Dio dio = Dio();
-  
 
   /* Options options;
   get() async {

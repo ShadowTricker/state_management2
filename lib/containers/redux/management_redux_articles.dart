@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:state_management2/components/demo_component/article_item.dart';
 import 'package:state_management2/components/demo_component/drawer_component.dart';
 import 'package:state_management2/containers/redux/store/app_state.dart';
 
+import 'actions/fetch_articles.dart';
 import 'models/article_model.dart';
 
 class ManagementReduxArticlesPage extends StatefulWidget {
@@ -19,6 +21,8 @@ class ManagementReduxArticlesPage extends StatefulWidget {
 }
 
 class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPage> {
+
+  // bool isInit = true;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +42,50 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
           )
         ],
       ),
-      drawer: DrawerComponent(logout: _logout,),
+      // drawer: DrawerComponent(logout: _logout),
+      drawer: _buildDrawer(),
       body: _buildBody(),
+    );
+
+    /* return StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
+      builder: (context, store) {
+        if (isInit) {
+          store.dispatch(getArticles(0));
+          setState(() {
+            isInit = false;
+          });
+        }
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Article List'),
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/redux-submit',
+                    arguments: 'Article'
+                  );
+                },
+              )
+            ],
+          ),
+          // drawer: DrawerComponent(logout: _logout),
+          drawer: _buildDrawer(),
+          body: _buildBody(),
+        );
+      },
+    ); */
+  }
+
+  Widget _buildDrawer() {
+    return StoreConnector<AppState, String>(
+      converter: (store) => store.state.author,
+      builder: (context, author) {
+        return DrawerComponent(logout: _logout, author: author);
+      },
     );
   }
 

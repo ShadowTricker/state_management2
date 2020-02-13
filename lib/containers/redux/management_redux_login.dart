@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:state_management2/components/demo_component/flutter_logo.dart';
+import 'package:state_management2/containers/redux/actions/set_author.dart';
 import 'package:state_management2/containers/redux/store/app_state.dart';
 import 'package:state_management2/services/http_service.dart';
 
@@ -87,7 +88,10 @@ class _ManagementReduxLoginPageState extends State<ManagementReduxLoginPage> {
   Widget buttonArea() {
     return StoreConnector<AppState, VoidCallback>(
       converter: (store) {
-        return () => store.dispatch(getArticles(3));
+        return () {
+          store.dispatch(getArticles());
+          store.dispatch(SetAuthorAction(_loginTextController.text));
+        };
       },
       builder: (context, callback) {
         return Container(

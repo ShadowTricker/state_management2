@@ -47,8 +47,8 @@ class ReduxApp extends StatelessWidget {
 
 
     /* final store = new Store(
-      appStateReducer, 
-      initialState: AppState(), 
+      appStateReducer,
+      initialState: AppState(),
       middleware: [fetchArticlesMiddleware],
     );
 
@@ -60,12 +60,12 @@ class ReduxApp extends StatelessWidget {
     // store.dispatch(FetchArticlesAction());
     print(store.state.articles);
     print(store.state.author);
-    
+
     Future.delayed(Duration(seconds: 5), () {
       print(store.state.articles);
       print(store.state.author);
     }); */
-    
+
 
     /* return ShareMainContextWidget(
       mainContext: mainContext,
