@@ -48,14 +48,9 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
     );
 
     /* return StoreConnector<AppState, Store<AppState>>(
-      converter: (store) => store,
+      onInit: (store) => store.dispatch(getArticles(0)),
+      converter: store,
       builder: (context, store) {
-        if (isInit) {
-          store.dispatch(getArticles(0));
-          setState(() {
-            isInit = false;
-          });
-        }
         return Scaffold(
           appBar: AppBar(
             title: Text('Article List'),
@@ -106,6 +101,7 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
     ); */
 
     return StoreConnector<AppState, List<Article>>(
+      onInit: (store) => store.dispatch(getArticles()),
       converter: (store) => store.state.articles,
       builder: (context, articles) {
         print(articles);
