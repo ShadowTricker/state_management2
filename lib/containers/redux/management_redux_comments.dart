@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:state_management2/components/demo_component/comment_item.dart';
 import 'package:state_management2/components/demo_component/common_content.dart';
 import 'package:state_management2/components/demo_component/common_header.dart';
+import 'package:state_management2/containers/redux/actions/add_comment.dart';
+import 'package:state_management2/containers/redux/actions/fetch_comments.dart';
+import 'package:state_management2/containers/redux/models/article_model.dart';
+import 'package:state_management2/containers/redux/store/app_state.dart';
+
+import 'models/comment_model.dart';
 
 class ManagementReduxCommentsPage extends StatefulWidget {
+
+  ManagementReduxCommentsPage(this.article);
+
+  final Article article;
 
   @override
   _ManagementReduxCommentsPageState createState() => _ManagementReduxCommentsPageState();
@@ -19,14 +30,24 @@ class _ManagementReduxCommentsPageState extends State<ManagementReduxCommentsPag
         title: Text('Details'),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/redux-submit',
-                arguments: 'Comment'
-              );
-            },
+          StoreConnector<AppState, VoidCallback>(
+            converter: (store) => () => store.dispatch(getComments(widget.article.articleId)),
+            builder: (context, callback) => IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                final Map<String, dynamic> arguments = {
+                  'pageType': 'Comment',
+                  'articleId': widget.article.articleId
+                };
+                final isSuccess = await Navigator.of(context).pushNamed(
+                  '/redux-submit',
+                  arguments: arguments
+                );
+                if (isSuccess == true) {
+                  callback();
+                }
+              },
+            ),
           )
         ],
       ),
@@ -41,8 +62,8 @@ class _ManagementReduxCommentsPageState extends State<ManagementReduxCommentsPag
         padding: EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0, bottom: 30.0),
         shrinkWrap: true, 
         children: <Widget>[
-          CommonHeader(),
-          CommonContent(),
+          CommonHeader(userName: widget.article.author, updateTime: widget.article.updateTime),
+          CommonContent(content: widget.article.content),
           _buildComments(),
         ],
       )
@@ -51,16 +72,23 @@ class _ManagementReduxCommentsPageState extends State<ManagementReduxCommentsPag
 
   Widget _buildComments() {
 
-    return ListView.separated(
-      shrinkWrap: true, 
-      itemCount: 2,
-      itemBuilder: (context, int index) {
-        return CommentItem();
+    return StoreConnector<AppState, List<Comment>>(
+      onInit: (store) => store.dispatch(getComments(widget.article.articleId)),
+      converter: (store) => store.state.comments,
+      builder: (context, comments) {
+        print(comments);
+        return ListView.separated(
+          shrinkWrap: true, 
+          itemCount: comments.length,
+          itemBuilder: (context, int index) {
+            return CommentItem(comments[index]);
+          },
+          separatorBuilder: (context, int index) => Divider(
+            height: .5,
+            color: Colors.black38
+          ),
+        );
       },
-      separatorBuilder: (context, int index) => Divider(
-        height: .5,
-        color: Colors.black38
-      ),
     );
   }
 }

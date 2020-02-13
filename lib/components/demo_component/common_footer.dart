@@ -1,14 +1,16 @@
 
 import 'package:flutter/material.dart';
 
-class CommonFooter extends StatelessWidget {
+class CommonFooter<T> extends StatelessWidget {
 
   final int commentsLength;
   final int articleId;
+  final T item;
 
   CommonFooter({
     this.commentsLength,
-    this.articleId
+    this.articleId,
+    this.item
   });
 
   @override
@@ -36,9 +38,10 @@ class CommonFooter extends StatelessWidget {
               ],
             ),
             onTap: () {
+              print(item);
               Navigator.of(context).pushNamed(
                 '/redux-details',
-                arguments: articleId
+                arguments: item
               );
             },
           )

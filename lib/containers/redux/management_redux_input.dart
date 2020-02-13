@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:state_management2/containers/redux/actions/add_article.dart';
+import 'package:state_management2/containers/redux/actions/add_comment.dart';
+import 'package:state_management2/containers/redux/store/app_state.dart';
 import 'package:state_management2/services/http_service.dart';
 
 class ManagementReduxInputPage extends StatefulWidget {
 
-  final String pageType;
+  final Map<String, dynamic> arguments;
 
-  ManagementReduxInputPage({ @required this.pageType });
+  ManagementReduxInputPage({ @required this.arguments });
 
   @override
   _ManagementReduxInputPageState createState() => _ManagementReduxInputPageState();
@@ -21,7 +26,7 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add ${ widget.pageType }',
+          'Add ${ widget.arguments['pageType'] }',
         ),
         centerTitle: true,
       ),
@@ -51,10 +56,10 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
           controller: _itemController,
           autofocus: false,
           maxLines: 8,
-          maxLength: widget.pageType == 'Article' ? 1000 : 100,
+          maxLength: widget.arguments['pageType'] == 'Article' ? 1000 : 100,
           maxLengthEnforced: true,
           decoration: InputDecoration(
-            hintText: 'Input your ${ widget.pageType.toLowerCase() }',
+            hintText: 'Input your ${ widget.arguments['pageType'].toLowerCase() }',
           ),
           validator: (v) {
             if (v.trim().isEmpty) {
@@ -69,39 +74,51 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
   }
 
   Widget buttonArea() {
-    return Container(
-      width: double.infinity,
-      height: 52.0,
-      child: InkWell(
-        child: Center(
-          child: Text('Submit', style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0
-          )),
-        ),
-        onTap: () async {
-          final Map<String, String> newItem = {
-            'author': 'shadow-tricker',
-            'content': _itemController.text,
-            if (widget.pageType == 'Article') 'title': '临时添加',
-            if (widget.pageType == 'Comment') 'articleId': '1'
-          };
-          bool isSuccess = false;
-          if (widget.pageType == 'Article') {
-            isSuccess = await HttpService.addArticle(newItem);
-          }
-          else {
-            isSuccess = await HttpService.addComment(newItem);
-          }
-          if(isSuccess) {
-            Navigator.of(context).pop();
-          } 
-          print(newItem);
-        },
-      ),
-      decoration: BoxDecoration(
-        color: Colors.blue
-      ),
+    return StoreConnector<AppState, Store<AppState>>(
+      converter: (store) => store,
+      builder: (context, store) {
+        return Container(
+          width: double.infinity,
+          height: 52.0,
+          child: InkWell(
+            child: Center(
+              child: Text('Submit', style: TextStyle(
+                color: Colors.white,
+                fontSize: 20.0
+              )),
+            ),
+            onTap: () {
+              final Map<String, dynamic> newItem = {
+                'author': store.state.author,
+                'content': _itemController.text,
+                if (widget.arguments['pageType'] == 'Article') 'title': '临时添加',
+                if (widget.arguments['pageType'] == 'Comment') 'articleId': widget.arguments['articleId']
+              };
+              /* bool isSuccess = false;
+              if (widget.arguments['pageType'] == 'Article') {
+                isSuccess = await HttpService.addArticle(newItem);
+              }
+              else {
+                isSuccess = await HttpService.addComment(newItem);
+              }
+              if(isSuccess) {
+                Navigator.of(context).pop();
+              }  */
+              if (widget.arguments['pageType'] == 'Article') {
+                store.dispatch(addArticle(newItem));
+              }
+              else {
+                store.dispatch(addComment(newItem));
+              }
+              
+              Navigator.of(context).pop(true);
+            },
+          ),
+          decoration: BoxDecoration(
+            color: Colors.blue
+          ),
+        );
+      },
     );
   }
 

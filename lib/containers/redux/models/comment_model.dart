@@ -1,12 +1,12 @@
 class Comment {
 
   String author;
-  String content;
+  String comment;
   String updateTime;
 
   Comment.fromJson(Map<String, dynamic> json)
     : author = json['author'] as String,
-      content = json['content'] as String,
+      comment = json['comment'] as String,
       updateTime = json['updateTime'] as String;
 
 }

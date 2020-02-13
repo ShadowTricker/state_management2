@@ -43,7 +43,7 @@ class HttpService {
     return comments;
   }
 
-  static Future<bool> addArticle(Map<String, String> newArticle) async {
+  static Future<bool> addArticle(Map<String, dynamic> newArticle) async {
     final response = await HttpService.dio.post(
       'http://$ip:4004/article/add',
       data: newArticle
@@ -54,7 +54,7 @@ class HttpService {
     return false;
   }
 
-  static Future<bool> addComment(Map<String, String> newComment) async {
+  static Future<bool> addComment(Map<String, dynamic> newComment) async {
     final response = await HttpService.dio.post(
       'http://$ip:4004/comment/add',
       data: newComment

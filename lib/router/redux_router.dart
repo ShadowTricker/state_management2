@@ -10,9 +10,11 @@ Map<String, WidgetBuilder> reduxRoutes(BuildContext context) {
     '/redux-articles': (context) => ManagementReduxArticlesPage(
       // ModalRoute.of(context).settings.arguments
     ),
-    '/redux-details': (context) => ManagementReduxCommentsPage(),
+    '/redux-details': (context) => ManagementReduxCommentsPage(
+      ModalRoute.of(context).settings.arguments
+    ),
     '/redux-submit': (context) => ManagementReduxInputPage(
-      pageType: ModalRoute.of(context).settings.arguments,
+      arguments: ModalRoute.of(context).settings.arguments,
     ),
   };
 }

@@ -31,15 +31,25 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
         title: Text('Article List'),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/redux-submit',
-                arguments: 'Article'
-              );
-            },
-          )
+          StoreConnector<AppState, VoidCallback>(
+            converter: (store) => () => store.dispatch(getArticles()),
+            builder: (context, callback) => IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () async {
+                final Map<String, dynamic> arguments = {
+                  'pageType': 'Article'
+                };
+
+                final isSuccess = await Navigator.of(context).pushNamed(
+                  '/redux-submit',
+                  arguments: arguments
+                );
+                if (isSuccess == true) {
+                  callback();
+                }
+              },
+            )
+          ),
         ],
       ),
       // drawer: DrawerComponent(logout: _logout),
@@ -104,7 +114,6 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
       onInit: (store) => store.dispatch(getArticles()),
       converter: (store) => store.state.articles,
       builder: (context, articles) {
-        print(articles);
         return Container(
           child: ListView.separated(
             padding: EdgeInsets.only(left: 16.0),

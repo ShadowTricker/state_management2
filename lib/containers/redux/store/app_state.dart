@@ -21,6 +21,6 @@ class AppState {
   AppState({
     this.author,
     this.articles = const [],
-    // this.comments = const [],
+    this.comments = const [],
   });
 }

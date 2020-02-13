@@ -21,7 +21,11 @@ class ArticleItem extends StatelessWidget {
         children: <Widget>[
           CommonHeader(userName: article.author, updateTime: article.updateTime),
           CommonContent(content: article.content),
-          CommonFooter(commentsLength: article.commentsLength, articleId: article.articleId)
+          CommonFooter<Article>(
+            commentsLength: article.commentsLength,
+            articleId: article.articleId,
+            item: article,
+          )
         ],
       ),
     );
