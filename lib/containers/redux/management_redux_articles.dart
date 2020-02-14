@@ -31,25 +31,19 @@ class _ManagementReduxArticlesPageState extends State<ManagementReduxArticlesPag
         title: Text('Article List'),
         centerTitle: true,
         actions: <Widget>[
-          StoreConnector<AppState, VoidCallback>(
-            converter: (store) => () => store.dispatch(getArticles()),
-            builder: (context, callback) => IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () async {
-                final Map<String, dynamic> arguments = {
-                  'pageType': 'Article'
-                };
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              final Map<String, dynamic> arguments = {
+                'pageType': 'Article'
+              };
 
-                final isSuccess = await Navigator.of(context).pushNamed(
-                  '/redux-submit',
-                  arguments: arguments
-                );
-                if (isSuccess == true) {
-                  callback();
-                }
-              },
-            )
-          ),
+              Navigator.of(context).pushNamed(
+                '/redux-submit',
+                arguments: arguments
+              );
+            },
+          )
         ],
       ),
       // drawer: DrawerComponent(logout: _logout),

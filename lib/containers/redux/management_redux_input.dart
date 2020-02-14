@@ -69,7 +69,6 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
           }
         ),
       )
-      
     );
   }
 
@@ -108,9 +107,9 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
                 store.dispatch(addArticle(newItem));
               }
               else {
-                store.dispatch(addComment(newItem));
+                store.dispatch(addComment(newItem, widget.arguments['articleId']));
               }
-              
+
               Navigator.of(context).pop(true);
             },
           ),

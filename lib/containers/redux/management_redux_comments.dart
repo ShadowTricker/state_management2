@@ -30,24 +30,18 @@ class _ManagementReduxCommentsPageState extends State<ManagementReduxCommentsPag
         title: Text('Details'),
         centerTitle: true,
         actions: <Widget>[
-          StoreConnector<AppState, VoidCallback>(
-            converter: (store) => () => store.dispatch(getComments(widget.article.articleId)),
-            builder: (context, callback) => IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () async {
-                final Map<String, dynamic> arguments = {
-                  'pageType': 'Comment',
-                  'articleId': widget.article.articleId
-                };
-                final isSuccess = await Navigator.of(context).pushNamed(
-                  '/redux-submit',
-                  arguments: arguments
-                );
-                if (isSuccess == true) {
-                  callback();
-                }
-              },
-            ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              final Map<String, dynamic> arguments = {
+                'pageType': 'Comment',
+                'articleId': widget.article.articleId
+              };
+              Navigator.of(context).pushNamed(
+                '/redux-submit',
+                arguments: arguments
+              );
+            },
           )
         ],
       ),
