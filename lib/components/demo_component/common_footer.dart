@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:state_management2/containers/redux/models/article_model.dart';
 
 class CommonFooter<T> extends StatelessWidget {
 
@@ -13,8 +14,13 @@ class CommonFooter<T> extends StatelessWidget {
     this.item
   });
 
+  Type _typeOf<T>() => T;
+
   @override
   Widget build(BuildContext context) {
+    final type = _typeOf<T>();
+    print(type);
+
     return Container(
       padding: EdgeInsetsDirectional.only(bottom: 14.0),
       child: Row(
