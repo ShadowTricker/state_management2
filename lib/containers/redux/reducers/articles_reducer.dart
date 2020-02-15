@@ -1,7 +1,7 @@
 import 'package:redux/redux.dart';
 import 'package:state_management2/containers/redux/actions/add_article.dart';
 import 'package:state_management2/containers/redux/actions/fetch_articles.dart';
-import 'package:state_management2/containers/redux/models/article_model.dart';
+import 'package:state_management2/models/common/models/article_model.dart';
 import 'package:state_management2/containers/redux/store/app_state.dart';
 
 /* AppState articleReducer(AppState state, action) {

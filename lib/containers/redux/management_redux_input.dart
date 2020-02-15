@@ -4,29 +4,20 @@ import 'package:redux/redux.dart';
 import 'package:state_management2/containers/redux/actions/add_article.dart';
 import 'package:state_management2/containers/redux/actions/add_comment.dart';
 import 'package:state_management2/containers/redux/store/app_state.dart';
-import 'package:state_management2/services/http_service.dart';
 
-class ManagementReduxInputPage extends StatefulWidget {
+class ManagementReduxInputPage extends StatelessWidget {
 
   final Map<String, dynamic> arguments;
+  final TextEditingController _itemController = TextEditingController();
 
   ManagementReduxInputPage({ @required this.arguments });
-
-  @override
-  _ManagementReduxInputPageState createState() => _ManagementReduxInputPageState();
-
-}
-
-class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
-
-  TextEditingController _itemController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add ${ widget.arguments['pageType'] }',
+          'Add ${ arguments['pageType'] }',
         ),
         centerTitle: true,
       ),
@@ -56,10 +47,10 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
           controller: _itemController,
           autofocus: false,
           maxLines: 8,
-          maxLength: widget.arguments['pageType'] == 'Article' ? 1000 : 100,
+          maxLength: arguments['pageType'] == 'Article' ? 1000 : 100,
           maxLengthEnforced: true,
           decoration: InputDecoration(
-            hintText: 'Input your ${ widget.arguments['pageType'].toLowerCase() }',
+            hintText: 'Input your ${ arguments['pageType'].toLowerCase() }',
           ),
           validator: (v) {
             if (v.trim().isEmpty) {
@@ -90,24 +81,14 @@ class _ManagementReduxInputPageState extends State<ManagementReduxInputPage> {
               final Map<String, dynamic> newItem = {
                 'author': store.state.author,
                 'content': _itemController.text,
-                if (widget.arguments['pageType'] == 'Article') 'title': '临时添加',
-                if (widget.arguments['pageType'] == 'Comment') 'articleId': widget.arguments['articleId']
+                if (arguments['pageType'] == 'Article') 'title': '临时添加',
+                if (arguments['pageType'] == 'Comment') 'articleId': arguments['articleId']
               };
-              /* bool isSuccess = false;
-              if (widget.arguments['pageType'] == 'Article') {
-                isSuccess = await HttpService.addArticle(newItem);
-              }
-              else {
-                isSuccess = await HttpService.addComment(newItem);
-              }
-              if(isSuccess) {
-                Navigator.of(context).pop();
-              }  */
-              if (widget.arguments['pageType'] == 'Article') {
+              if (arguments['pageType'] == 'Article') {
                 store.dispatch(addArticle(newItem));
               }
               else {
-                store.dispatch(addComment(newItem, widget.arguments['articleId']));
+                store.dispatch(addComment(newItem, arguments['articleId']));
               }
 
               Navigator.of(context).pop(true);

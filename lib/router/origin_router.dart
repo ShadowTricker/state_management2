@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:state_management2/containers/bloc/bloc_app.dart';
 import 'package:state_management2/containers/origin/bloc_page.dart';
 import 'package:state_management2/containers/origin/catelogue.dart';
 import 'package:state_management2/containers/origin/downward_data_page.dart';
@@ -33,6 +34,7 @@ Map<String, WidgetBuilder> originRoutes(context) {
       title: ModalRoute.of(context).settings.arguments
     ),
     '/origin/manage-catelogue': (context) => ManagementCateloguePage(),
-    '/redux': (context) => ReduxApp(mainContext: context)
+    '/redux': (context) => ReduxApp(mainContext: context),
+    '/bloc': (context) => BlocApp(mainContext: context)
   };
 }

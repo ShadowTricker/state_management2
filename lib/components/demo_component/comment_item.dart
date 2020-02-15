@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:state_management2/containers/redux/models/comment_model.dart';
+import 'package:state_management2/models/common/models/comment_model.dart';
 
 import 'common_content.dart';
 import 'common_header.dart';
@@ -7,7 +7,7 @@ import 'common_header.dart';
 class CommentItem extends StatelessWidget {
 
   final Comment comment;
-  
+
   CommentItem(this.comment);
 
   @override
@@ -26,7 +26,6 @@ class CommentItem extends StatelessWidget {
             padding: EdgeInsets.only(left: 7.0),
             child: CommonContent(content: comment.comment),
           ),
-          
         ],
       ),
       decoration: BoxDecoration(

@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:state_management2/containers/redux/models/article_model.dart';
+import 'package:state_management2/models/common/models/article_model.dart';
 
 import 'common_content.dart';
 import 'common_footer.dart';
@@ -8,9 +8,13 @@ import 'common_header.dart';
 
 class ArticleItem extends StatelessWidget {
 
-  ArticleItem(this.article);
+  ArticleItem({
+    this.article,
+    this.appType
+  });
 
   final Article article;
+  final String appType;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,7 @@ class ArticleItem extends StatelessWidget {
             commentsLength: article.commentsLength,
             articleId: article.articleId,
             item: article,
+            appType: appType,
           )
         ],
       ),

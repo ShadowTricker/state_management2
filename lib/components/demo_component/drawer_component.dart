@@ -18,22 +18,9 @@ class DrawerComponent extends StatelessWidget {
             leading: Icon(Icons.exit_to_app, color: Colors.blue,),
             title: Text('Logout'),
             onTap: () {
-              logout();
+              logout(context);
             },
           ),
-          /* ListView.separated(
-            itemCount: 2,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                leading: Icon(Icons.message),
-                title: Text('message'),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => Divider(
-              height: 1,
-              color: Colors.black38,
-            )
-          ) */
         ],
       )
     );

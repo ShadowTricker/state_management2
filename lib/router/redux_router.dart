@@ -7,9 +7,7 @@ import 'package:state_management2/containers/redux/management_redux_login.dart';
 Map<String, WidgetBuilder> reduxRoutes(BuildContext context) {
   return {
     '/redux-login': (context) => ManagementReduxLoginPage(),
-    '/redux-articles': (context) => ManagementReduxArticlesPage(
-      // ModalRoute.of(context).settings.arguments
-    ),
+    '/redux-articles': (context) => ManagementReduxArticlesPage(),
     '/redux-details': (context) => ManagementReduxCommentsPage(
       ModalRoute.of(context).settings.arguments
     ),

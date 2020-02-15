@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:state_management2/components/demo_component/comment_item.dart';
 import 'package:state_management2/components/demo_component/common_content.dart';
 import 'package:state_management2/components/demo_component/common_header.dart';
-import 'package:state_management2/containers/redux/actions/fetch_comments.dart';
+import 'package:state_management2/containers/bloc/events/comments_event.dart';
+import 'package:state_management2/containers/bloc/states/comments_state.dart';
 import 'package:state_management2/models/common/models/article_model.dart';
-import 'package:state_management2/containers/redux/store/app_state.dart';
 import 'package:state_management2/models/common/models/comment_model.dart';
 
-class ManagementReduxCommentsPage extends StatelessWidget {
+import 'bloc_models/comments_bloc.dart';
 
-  ManagementReduxCommentsPage(this.article);
+class ManagementBlocCommentsPage extends StatefulWidget {
+
+  ManagementBlocCommentsPage(this.article);
 
   final Article article;
+
+  @override
+  _ManagementBlocCommentsPageState createState() => _ManagementBlocCommentsPageState();
+
+}
+
+class _ManagementBlocCommentsPageState extends State<ManagementBlocCommentsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<CommentsBloc>(context)
+      .add(GetComments(articleId: widget.article.articleId));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +39,17 @@ class ManagementReduxCommentsPage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
+            onPressed: () async {
               final Map<String, dynamic> arguments = {
                 'pageType': 'Comment',
-                'articleId': article.articleId
+                'articleId': widget.article.articleId
               };
-              Navigator.of(context).pushNamed(
-                '/redux-submit',
+              await Navigator.of(context).pushNamed(
+                '/bloc-submit',
                 arguments: arguments
               );
+              BlocProvider.of<CommentsBloc>(context)
+                .add(GetComments(articleId: widget.article.articleId));
             },
           )
         ],
@@ -47,8 +65,8 @@ class ManagementReduxCommentsPage extends StatelessWidget {
         padding: EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0, bottom: 30.0),
         shrinkWrap: true,
         children: <Widget>[
-          CommonHeader(userName: article.author, updateTime: article.updateTime),
-          CommonContent(content: article.content),
+          CommonHeader(userName: widget.article.author, updateTime: widget.article.updateTime),
+          CommonContent(content: widget.article.content),
           _buildComments(),
         ],
       )
@@ -56,10 +74,9 @@ class ManagementReduxCommentsPage extends StatelessWidget {
   }
 
   Widget _buildComments() {
-    return StoreConnector<AppState, List<Comment>>(
-      onInit: (store) => store.dispatch(getComments(article.articleId)),
-      converter: (store) => store.state.comments,
-      builder: (context, comments) {
+    return BlocBuilder<CommentsBloc, CommentsState>(
+      builder: (context, state) {
+        final List<Comment> comments = state.comments;
         return ListView.separated(
           shrinkWrap: true,
           itemCount: comments.length,
@@ -74,5 +91,4 @@ class ManagementReduxCommentsPage extends StatelessWidget {
       },
     );
   }
-
 }
