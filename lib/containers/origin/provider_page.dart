@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:state_management2/components/widget_with_state_provider.dart';
 import 'package:state_management2/components/widget_without_state_provider.dart';
 import 'package:state_management2/models/provider_dart/count_model.dart';
 
@@ -29,27 +30,25 @@ class _ProviderPageState extends State<ProviderPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Provider<CountModel>(
-      create: (_) => CountModel(),
+    return ChangeNotifierProvider<CountModel>.value(
+      value: CountModel(),
       child: Container(
         padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(
+            /* Text(
               'SuperCount: ${ Provider.of<CountModel>(context).count }',
               style: TextStyle(
                 fontSize: 16.0
               ),
-            ),
-            // WithStateProviderWidget(getCount: getCount),
+            ), */
+            WithStateProviderWidget(),
             WithoutStateProviderWidget()
           ],
         ),
       ),
     );
-    
-    
   }
 }
