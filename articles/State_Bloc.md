@@ -2,11 +2,12 @@
 
 ## 1. Bloc Base （Bloc 基本原理）  
 **1\. Bloc 的原则**  
-Bloc 的原则与 Redux 很相似，但是有歧义：
+Bloc 的原则与 Redux 很相似：
 + State 是只读的  
 > Bloc 不准许直接修改 State， 要修改State， 只能通过 Event 来修改。
 + 使用纯函数来执行修改  
 > Bloc 提供了一个 `mapEventToState` 函数，该函数用来处理数据逻辑，与 Redux 的 reducer 一致，它`只能返回新的 state， 不能修改`。  
+Bloc 取消了 Redux 使用的 单一数据原则，它支持可以拥有多个 Bloc 对象，这个完全取决于业务逻辑。
 
 **2\. Event**  
 Bloc 的 Event 是更新 state 的触发器， 它可以包含数据，或者仅仅是一个独一无二的类。

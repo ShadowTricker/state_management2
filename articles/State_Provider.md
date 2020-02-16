@@ -112,7 +112,7 @@ class InheritedProvider<T> extends InheritedWidget {
 
 **4\. 数据流**  
 ![Provider数据流](../assets/provider/../md_images/provider/Provider.png)
-1. `ChandeNotifierProvider` 接受 DataModel 和 SubWiget， 并`监听 DataModel` 的变化（update 传入 DataModel 的 addListener）。
+1. `ChandeNotifierProvider` 接受 DataModel 和 SubWidget， 并`监听 DataModel` 的变化（update 传入 DataModel 的 addListener）。
 2. `DataModel` 更新数据时，调用 `notifyListeners` 方法， 调用了之前传入的 `ChandeNotifierProvider` 的 update方法，从而使 `ChandeNotifierProvider`组件以及下面的子组件树也更新。
 
 ---
