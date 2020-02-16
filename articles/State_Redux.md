@@ -224,5 +224,38 @@ Widget _buildBody() {
 }
 ```
 `StoreConnector<S, ViewModel>` 是一个连接 数据 和 UI 的组件。  
-在 `react-redux` 中也提供了一个叫做 `connect` 的高阶组件[^1]，高阶组件是一个函数，它的`输入是一个组件`， 输出一个 `被添加了属性的新组件`， 类似于`装饰者模式`， 将属性通过新组件的外壳传递给输入的组件。`flutter_redux` 中的 StoreConnector 跟其类似，只不过高阶组件`以类的形式实现`。  
-[^1]： 高阶组件是为了实现组件逻辑的复用。
+在 `react-redux` 中也提供了一个叫做 `connect` 的高阶组件，高阶组件是一个函数，它的`输入是一个组件`， 输出一个 `被添加了属性的新组件`， 类似于`装饰者模式`， 将属性通过新组件的外壳传递给输入的组件，实现了组件逻辑的复用。`flutter_redux` 中的 StoreConnector 跟其类似，只不过高阶组件`以类的形式实现`。  
++ 泛型类 S， 泛型类 ViewModel： 前者是全局的 State，后者是你要转换的数据类型。
++ converter： 根据你提供的泛型类， 进行数据转换，将转换出来的数据提供给builder 的第二个参数。
++ builder： 构建器，第二个参数是 converter 转换后的 data。
+
+`StoreConnector` 还提供了生命周期函数，比如例子中的 onInit， 用来做 UI 层面的初始化。因为生命周期函数，大部分的组件都可以使用 StatelessWidget 来构建（当然，具体还是要取决于业务逻辑）。  
+下面是一个转换 action 为 callback 的例子：
+```dart
+Widget buttonArea() {
+    return StoreConnector<AppState, VoidCallback>(
+      converter: (store) => () => store.dispatch(SetAuthorAction(_loginTextController.text)),
+      builder: (context, callback) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: RaisedButton(
+            padding: EdgeInsets.symmetric(horizontal: 131.0, vertical: 12.0),
+            child: Text('Login', style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0
+            )),
+            onPressed: () {
+              callback();
+              Navigator.of(context).pushReplacementNamed('/redux-articles');
+            },
+            color: Colors.blue,
+          ),
+        );
+      },
+    );
+  }
+```
+Demo 中的例子比较简单，但是复杂的业务中，ViewModel 可能还需要独立的文件去书写，这里不做研究。  
+
+## 3. Conclution  
+文档缺失，上手很难，热更新不好用。
