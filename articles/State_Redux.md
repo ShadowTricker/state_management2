@@ -1,21 +1,21 @@
 # Flutter State Management Redux  
 
 ## 1. Redux Base （Redux 基本原理）  
-1\. Redux 的三大原则
+**1\. Redux 的三大原则**
 + 单一数据源  
 > 整个应用的 `State` 被存储在一棵 `object tree` 中， 并且这个 tree 只存在于唯一的 `Store` 中。
 + State 是只读的  
-> Redux 不准许直接修改 State， 唯一修改 State 的方法是出发 action， action 是一个描述发生事件的普通对象。
+> Redux 不准许直接修改 State， 唯一修改 State 的方法是触发 action， action 是一个描述发生事件的普通对象。
 + 使用纯函数来执行修改  
 > 纯函数 Reducer 接受当前 state 和 action 作为参数，产生一个 新的 state（注意： 不是修改 State）。  
 
-2\. Store  
+**2\. Store**  
 Redux 的 Store 在初始化之后，对外提供了三个方法，分别是：
 + 添加 `监听者（listener）` 到 Store 中的方法 `Store.subscribe`。
 + 对外提供 `State` 的 `Store.getState`。
 + 用于接受 `action` 并且 修改 State 的方法 `Store.dispatch`。  
 
-3\. Action  
+**3\. Action**  
 `Action` 是一个修改 State 的触发器， 它包含了 `修改的类型` （要修改 State 的哪个或者哪些字段属性），以及要 `修改的数据`。由于 Flutter 是强类型语言，所以每个 Action 自己就是独一无二的类型。下面是 Javascript 和 Flutter 之间的 Action 实现：  
 ```ts
     // Action in Javascript
@@ -32,7 +32,7 @@ Redux 的 Store 在初始化之后，对外提供了三个方法，分别是：
     }
 ```
 
-4\. Reducer  
+**4\. Reducer**  
 Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生新的 State。
 由于纯函数是不能产生副作用的， 所以它只能产生新值， 而不能修改值。下面是 Javascript 和 Flutter 的实现：  
 ```ts
@@ -56,7 +56,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
     }
 ```
 
-5\. 数据流  
+**5\. 数据流**  
 ![Redux 数据流](../assets/md_images/redux/Redux.png)
 1. Store 初始化时，对外提供了 `subscribe`， `getState`， 以及 `dispatch` 方法。  
 2. 监听者（`Listener`） 通过 `subscribe` 方法对 Store 进行了订阅， 并且通过 `getState` 方法获取 Store 中的 `state`。  
@@ -66,7 +66,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
 ---
 
 ## 2. Redux in Flutter （Redux Flutter 实践）  
-1\. 安装依赖  
+**1\. 安装依赖**  
 ```yaml
     // dependencies in pubspec.yaml file
     dependencies:
@@ -80,7 +80,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
         redux_logging: 0.4.0
 ```
 
-2\. 创建 Store 中 State 对象  
+**2\. 创建 Store 中 State 对象**  
 ```dart
     class AppState {
         String author;
@@ -95,7 +95,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
     }
 ```
 
-3\. 创建全局 reducer  
+**3\. 创建全局 reducer**  
 ```dart
     AppState appStateReducer(AppState state, action) => AppState(
         author: authorReducer(state.author, action),
@@ -105,7 +105,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
 ```
 在正常的开发流程中， state 是由很多个小的业务逻辑 state 组成的， 所以在开发中也可以根据业务逻辑将 reducer 进行拆分细化，让它们只负责自己的业务逻辑，然后在总的 reducer 中，将他们合并到一起，比如上面的例子所写的那样， appStateReducer 可能会分成 authorReducer 等。
 
-4\. 编写局部的 reducer  
+**4\. 编写局部的 reducer**  
 ```dart
     List<Article> getArticlesReducer(List<Article> articles, FetchArticlesSucceedAction action) {
         return action.articles;
@@ -123,7 +123,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
 combineReducers 的作用是将小的 reducer 组合起来生成一个大的 reducer。  
 TypedReducer 的作用则是它会通过你传进去的泛型类替你去做判断具体使用了哪个reducer 和 action。就不用像前面原理那样自己写判断了。 
 
-5\. 编写 Action  
+**5\. 编写 Action**  
 ```dart
     class FetchArticlesSucceedAction {
         final List<Article> articles;
@@ -139,9 +139,9 @@ TypedReducer 的作用则是它会通过你传进去的泛型类替你去做判�
     }
 ```
 Redux 默认是不支持异步的， 所以在安装依赖的时候安装了 redux_thunk 这个支持异步的中间件，它的作用就是会返回一个异步的 action。  
-如上代码所示，写一个函数返回 ThunkAction 的函数，这函数可以有参数（比如服务器请求的参数），然后当调用异步服务之后，将自己的同步action 包装进去，使用 store.dispatch 来调用自己的同步 action。  
+如上代码所示，写一个返回 ThunkAction 的函数，这函数可以有参数（比如服务器请求的参数），然后当调用异步服务之后，将自己的同步action 包装进去，使用 store.dispatch 来调用自己的同步 action。  
 
-6\. 初始化 store  
+**6\. 初始化 store**  
 ```dart
 class ReduxApp extends StatelessWidget {
 
@@ -166,7 +166,7 @@ Store 类接受三个参数：
 
 到此处为止，redux 的配置工作已经完成了，接下来就是数据关联到 UI 的问题。  
 
-7\. 将 store 提供给顶级 App UI  
+**7\. 将 store 提供给顶级 App UI**  
 ```dart
 class ReduxApp extends StatelessWidget {
 
@@ -196,9 +196,9 @@ class ReduxApp extends StatelessWidget {
 
 }
 ```
-`StoreProvider<S>` 是一个继承自 InheritedWidget 的组件，它提供了两个参数， 一个是存储数据的 store，另一个是渲染的子组件树。其中 `泛型类 S` 是store 的类型。
+`StoreProvider<S>` 是一个继承自 InheritedWidget 的组件，它提供了两个参数， 一个是存储数据的 store，另一个是渲染的子组件树。其中 `泛型类 S` 是 store 中 state 的类型。
 
-8\. 获取数据到 UI  
+**8\. 获取数据到 UI**  
 ```dart
 // a part code of management_redux_articles.dart
 Widget _buildBody() {
@@ -232,6 +232,7 @@ Widget _buildBody() {
 `StoreConnector` 还提供了生命周期函数，比如例子中的 onInit， 用来做 UI 层面的初始化。因为生命周期函数，大部分的组件都可以使用 StatelessWidget 来构建（当然，具体还是要取决于业务逻辑）。  
 下面是一个转换 action 为 callback 的例子：
 ```dart
+// a part code of management_redux_login.dart
 Widget buttonArea() {
     return StoreConnector<AppState, VoidCallback>(
       converter: (store) => () => store.dispatch(SetAuthorAction(_loginTextController.text)),
@@ -256,6 +257,8 @@ Widget buttonArea() {
   }
 ```
 Demo 中的例子比较简单，但是复杂的业务中，ViewModel 可能还需要独立的文件去书写，这里不做研究。  
+
+---
 
 ## 3. Conclution  
 文档缺失，上手很难，热更新不好用。
