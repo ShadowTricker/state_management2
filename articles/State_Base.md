@@ -273,9 +273,9 @@ class DownwardDataPage extends StatelessWidget {
 
 状态提升指， 如果 `相邻或者同级别的组件` 之间需要 `共享状态`，鉴于单向数据流动的原因，只能将共享的状态或者数据交给此相邻组件的 `共同的父组件` 保管。  
 例如下图：  
-![state_improvement1](./assets/md_images/state_improvement1.png)  
+![state_improvement1](./assets/md_images/base/state_improvement1.png)  
 其中 list2 假如也需要用到 comments 这个状态（数据），为了使comments 共享， 改成如下的形式：
-![state_improvement2](./assets/md_images/state_improvement2.png)
+![state_improvement2](./assets/md_images/base/state_improvement2.png)
 将 `comments` 的状态提升至 list1和list2 共同的父组件 `commentsApp` 中， 然后将其作为 `props` 传递至 两个 list中。comments 作为 commentsApp 的 `state`， 当 comments 更新时，渲染在 app 中的 两个 list 组件会因为 app 的更新而更新（props 也会更新）。  
 
 下面是 Demo：
@@ -488,7 +488,7 @@ class _WithStateWidgetState extends State<WithStateWidget> {
 Dumb 组件的存在意义主要是为了复用，因为没有强绑定业务的逻辑和数据。  
 一个 Dumb 组件最好不要引用 Smart 组件，因为一旦引用就会导致无法复用，所以尽可能不要做这种事。  
 
-![Smart_or_Dumb](./assets/md_images/SmartOrDumb.png)  
+![Smart_or_Dumb](./assets/md_images/base/SmartOrDumb.png)  
 
 ---  
 ## 5. Why State Management？（状态管理？）  
@@ -499,7 +499,7 @@ Flutter 本身提供了一个用来共享数据的组件 `InheritedWidget`， �
 ## 6. InheritedWidget （数据共享组件）  
 Flutter 提供的 `InheritedWidget` 在思想上跟 `React 自带的 Context` 是一样的。实现的方式，都是在 应用的**顶层定义了一个专门存放数据的组件**，然后该组件**对外提供了一个获取数据的方法**。而需要使用该数据的组件一定**是这个存放数据的组件的子孙组件**， 这样，当子孙组件调用数据组件对外的方法时，就会**在该数据组件中取到对应的数据**。如下图：  
 
-![InheritedWidget](./assets/md_images/InheritedWidget.png)  
+![InheritedWidget](./assets/md_images/base/InheritedWidget.png)  
 
 下面是 Demo：
 1. 首先，实现一个存放数据的 `InheritedWidget`：
