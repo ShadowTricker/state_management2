@@ -2,21 +2,27 @@
 
 ## 1. 关于 widget 重绘的性能问题  
 Flutter 拥有 Widget Element RenderObject 三种绘制树。  
-Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key）来确定是使用之前的组件更新状态渲染还是重新渲染  
+![Flutter_Building_Tree](../assets/md_images/appendix/Flutter&#32;Build&#32;Tree.png)
+Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key），以确定是使用之前的组件更新状态渲染（`重绘数据`）还是重新渲染（`重新生成组件`）。  
 
 ---
 
 ## 2. 共享数据组件嵌套，如何找到对应的共享数据组件？  
+![Nested_InheritedWidget](../assetes/md_images/appendix/../../../assets/md_images/appendix/InheritedWidget.png)
+`dart` 中有一个专门返回 `泛型类` 的函数：
 ```dart
 Type _typeOf<T>() => T;
 ```
-该方法可以返回返回 泛型类T 的类型。
-在创建 of 方法时，dependOnInheritedWidgetOfExactType(aspect: type)来获取InheritedWidget。 **该方法只能用来查找 InheritedWidget。**
+在创建 of 方法时，把 `泛型T` 替换成 `InheritedWidget<Data>`(`<T> => <InheritedWidget<DataModel>>`)，因为 `Data` 的类型可以是唯一的，所以通过该方法可以得到 `类型`。  
+然后配合 context（BuildContext 上下文）的 `dependOnInheritedWidgetOfExactType(aspect: type)` 方法来获取InheritedWidget。 **`dependOnInheritedWidgetOfExactType` 方法只能用来查找 InheritedWidget。** 示例：  
 ```dart
 Type _typeOf<T>() => T;
 static ShareMainContextWidget of<T>(BuildContext context) {
+    // ShareMainContextWidget extends from InheritedWidget
+    // _typeOf will return the InheritedWidget with generics T
     final type = _typeOf<ShareMainContextWidget<T>>();
     // dependOnInheritedWidgetOfExactType can only used to find InheritedWidget
+    // sample shows it uses the return type to find the nearest correspond InheritedWidget
     return context.dependOnInheritedWidgetOfExactType(aspect: type);
 }
 ```
@@ -128,7 +134,7 @@ StreamBuilder({
 ```
 构造函数基本与 `FutureBuilder` 一致，除了 `future` 换成了 `stream`。  
 ```dart
-class AsyncStreamBuilderPage extends StatelessWidget {
+class StreamBuilderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,21 +148,28 @@ class AsyncStreamBuilderPage extends StatelessWidget {
 
   Widget _buildBody() {
     return StreamBuilder<int>(
-      stream: counter(), //
-      //initialData: ,// a Stream<int> or null
+      stream: counter(),
+      initialData: null,
       builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        String showData;
+        if (snapshot.hasError) showData = snapshot.error;
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Text('没有Stream');
+            showData = '没有Stream';
+            break;
           case ConnectionState.waiting:
-            return Text('等待数据...');
+            showData = '等待数据...';
+            break;
           case ConnectionState.active:
-            return Text('active: ${snapshot.data}');
+            showData = 'active: ${snapshot.data}';
+            break;
           case ConnectionState.done:
-            return Text('Stream已关闭');
+            showData = 'Stream已关闭';
+            break;
         }
-        return null; // unreachable
+        return Center(
+          child: Text('$showData')
+        );
       },
     );
   }
@@ -169,13 +182,31 @@ class AsyncStreamBuilderPage extends StatelessWidget {
 }
 ```
 
+以下是 ConnectionState 的状态解释：
+```dart
+enum ConnectionState {
+  // when there is no async task, such as the future or the stream is null
+  none,
+
+  // when the async task is on pending (waiting) status
+  waiting,
+
+  // when the stream has already post data, the status is active
+  // Future has not this status, it is just for stream
+  active,
+
+  // the async task has been complete
+  done,
+}
+```
+
 ---
 
 ## 5. Model 与 JSON 的转换  
-**1\. JSON 转换 Model**
+**1\. JSON 转换 Model**  
 在 Model 中编写 fromJson 方法， 如下：  
 ```dart
-// Model-Class to parse JSON to Model
+// Model-Class parse JSON to Model
 class Article {
 
   int articleId;
@@ -201,7 +232,7 @@ Article.fromJson(data)
 
 **2\. Model 转换 JSON**  
 ```dart
-// Model-Class to parse Model to JSON
+// Model-Class parse Model to JSON
 class User {
   final String name;
   final String email;

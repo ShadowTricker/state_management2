@@ -32,7 +32,7 @@ class AsyncCatelogue extends StatelessWidget {
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              // Navigator.of(context).pushNamed('/origin/$cateIndex');
+              Navigator.of(context).pushNamed('/origin/${ catelogue[index].toLowerCase() }');
             },
           ),
         );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AsyncStreamBuilderPage extends StatelessWidget {
+class StreamBuilderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,21 +14,28 @@ class AsyncStreamBuilderPage extends StatelessWidget {
 
   Widget _buildBody() {
     return StreamBuilder<int>(
-      stream: counter(), //
-      //initialData: ,// a Stream<int> or null
+      stream: counter(),
+      initialData: null,
       builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        String showData;
+        if (snapshot.hasError) showData = snapshot.error;
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Text('没有Stream');
+            showData = '没有Stream';
+            break;
           case ConnectionState.waiting:
-            return Text('等待数据...');
+            showData = '等待数据...';
+            break;
           case ConnectionState.active:
-            return Text('active: ${snapshot.data}');
+            showData = 'active: ${snapshot.data}';
+            break;
           case ConnectionState.done:
-            return Text('Stream已关闭');
+            showData = 'Stream已关闭';
+            break;
         }
-        return null; // unreachable
+        return Center(
+          child: Text('$showData')
+        );
       },
     );
   }
