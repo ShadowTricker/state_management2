@@ -2,8 +2,8 @@
 
 ## 1. 关于 widget 重绘的性能问题  
 Flutter 拥有 Widget Element RenderObject 三种绘制树。  
-![Flutter_Building_Tree](../assets/md_images/appendix/Flutter&#32;Build&#32;Tree.png)
-Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key），以确定是使用之前的组件更新状态渲染（`重绘数据`）还是重新渲染（`重新生成组件`）。  
+![Flutter_Building_Tree](../assets/md_images/appendix/Flutter&#32;Build&#32;Tree.png)  
+Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key），以确定是使用之前的组件更新状态渲染（`修改数据`）还是重新渲染（`重新生成组件`）。  
 
 ---
 
@@ -13,16 +13,16 @@ Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会�
 ```dart
 Type _typeOf<T>() => T;
 ```
-在创建 of 方法时，把 `泛型T` 替换成 `InheritedWidget<Data>`(`<T> => <InheritedWidget<DataModel>>`)，因为 `Data` 的类型可以是唯一的，所以通过该方法可以得到 `类型`。  
+在创建 of 方法时，把 `泛型T` 替换成 `InheritedWidget<Data>`(`<T> => <InheritedWidget<DataModel>>`)，因为 `Data` 的类型可以是唯一的，所以通过该方法可以得到 `自身的类型`。  
 然后配合 context（BuildContext 上下文）的 `dependOnInheritedWidgetOfExactType(aspect: type)` 方法来获取InheritedWidget。 **`dependOnInheritedWidgetOfExactType` 方法只能用来查找 InheritedWidget。** 示例：  
 ```dart
 Type _typeOf<T>() => T;
 static ShareMainContextWidget of<T>(BuildContext context) {
-    // ShareMainContextWidget extends from InheritedWidget
-    // _typeOf will return the InheritedWidget with generics T
+    // ShareMainContextWidget extends from InheritedWidget.
+    // _typeOf will return the type of InheritedWidget with generics T itself.
     final type = _typeOf<ShareMainContextWidget<T>>();
-    // dependOnInheritedWidgetOfExactType can only used to find InheritedWidget
-    // sample shows it uses the return type to find the nearest correspond InheritedWidget
+    // dependOnInheritedWidgetOfExactType can only used to find InheritedWidget.
+    // sample shows it uses the return type to find the nearest correspond InheritedWidget.
     return context.dependOnInheritedWidgetOfExactType(aspect: type);
 }
 ```
