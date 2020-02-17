@@ -199,7 +199,7 @@ _buildButton(
 
 ---
 
-## 3. Conclution  
+## 3. Conclusion  
 1\. 这个库是Flutter开发团队与外部团队合作开发的，是Flutter官方首推的状态管理库，api 相关文档可以在Flutter 官网查到，比较全面。  
 2\. 整体的业务逻辑主要在DataModel中，编写量不算特别的大。  
 3\. 对于异步的支持暂时没有尝试，估计可以直接在DataModel的方法中直接写异步函数。

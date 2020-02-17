@@ -4,7 +4,7 @@ import 'package:state_management2/models/common/models/comment_model.dart';
 
 class HttpService {
 
-  static final String ip = '192.168.0.100';
+  static final String ip = '10.243.27.195';
 
   static Dio dio = Dio();
 

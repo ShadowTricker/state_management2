@@ -74,7 +74,7 @@ Reducer 是一个纯函数。 它接受现在的 State 和 action， 来产生�
         redux: 4.0.0
         // provide redux connect for user interface
         flutter_redux: 0.6.0
-        // a middleware let flutter use async action
+        // a middleware let redux use async action
         redux_thunk: 0.3.0
         // log
         redux_logging: 0.4.0
@@ -256,11 +256,10 @@ Widget buttonArea() {
     );
   }
 ```
-Demo 中的例子比较简单，但是复杂的业务中，ViewModel 可能还需要独立的文件去书写，这里不做研究。  
+Demo 中的例子比较简单，但是复杂的业务中，ViewModel 可以对 UI 更新的性能进行优化，可能需要独立的文件去书写，这里不做研究。  
 
 ---
 
-## 3. Conclution  
+## 3. Conclusion  
 1\. 文档缺失，官方给的例子稀少，网上的帖子也相对较少。  
-2\. 思想通用，但是写起来很难（主要是没文档）。  
-3\. Flutter 引以为傲的热更新废了（据说阿里自己写了个热更新 fish-redux）。
+2\. 思想通用，熟悉redux 的人上手应该很快（文档健全的话）。不熟悉的话，学习曲线较陡，因为需要配置很多分散的文件。  
