@@ -2,7 +2,9 @@
 
 ## 1. 关于 widget 重绘的性能问题  
 Flutter 拥有 Widget Element RenderObject 三种绘制树。  
-Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key）来确定是使用之前的组件更新状态渲染还是重新渲染
+Element 这一层很类似 react 的 VirtualDOM，在生成ElementTree时，会调用Widget 的 canUpdate 方法，来确定之前的组件是不是同类型（并且验证key）来确定是使用之前的组件更新状态渲染还是重新渲染  
+
+---
 
 ## 2. 共享数据组件嵌套，如何找到对应的共享数据组件？  
 ```dart
@@ -18,6 +20,8 @@ static ShareMainContextWidget of<T>(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType(aspect: type);
 }
 ```
+
+---
 
 ## 3. dart 中的异步  
 **Future**  
@@ -49,6 +53,8 @@ runUsingFuture() {
 dart 语言中的 Stream 是一系列的数据。它可以接收多个异步操作的结果，常用于会多次读取数据的异步任务场景，如网络内容下载、文件读写等。  
 使用方式也是两种，一种使用 stream api，另一种 可以使用 await for 循环：  
 
+---
+
 
 ## 4. Flutter 中的异步 （异步UI更新）  
 **FutureBuilder**  
@@ -66,7 +72,48 @@ FutureBuilder({
     ```dart
     Function (BuildContext context, AsyncSnapshot snapshot)
     ```
-    `snapshot` 会包含当前异步任务的状态及结果，比如我们可以通过 `snapshot.connectionState` 获取异步任务的状态信息、通过 `snapshot.hasError` 判断异步任务是否有错误等等。
+    `snapshot` 会包含当前异步任务的状态及结果，比如我们可以通过 `snapshot.connectionState` 获取异步任务的状态信息、通过 `snapshot.hasError` 判断异步任务是否有错误等等。  
+
+下面是个例子：  
+```dart
+class FutureBuilderPage extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('FutureBuilder'),
+        centerTitle: true,
+      ),
+      body: _buildBody()
+    );
+  }
+
+  Widget _buildBody() {
+    return Center(
+      child: FutureBuilder<String>(
+        future: mockNetworkData(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            } else {
+              return Text("Contents: ${snapshot.data}");
+            }
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
+  }
+
+  Future<String> mockNetworkData() async {
+    return Future.delayed(Duration(seconds: 2), () => '我是异步数据');
+  }
+
+}
+```
 
 
 **StreamBuilder**  
@@ -79,4 +126,105 @@ StreamBuilder({
   @required this.builder,
 })
 ```
-构造函数基本与 `FutureBuilder` 一致，除了 `future` 换成了 `stream`。
+构造函数基本与 `FutureBuilder` 一致，除了 `future` 换成了 `stream`。  
+```dart
+class AsyncStreamBuilderPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('FutureBuilder'),
+        centerTitle: true,
+      ),
+      body: _buildBody()
+    );
+  }
+
+  Widget _buildBody() {
+    return StreamBuilder<int>(
+      stream: counter(), //
+      //initialData: ,// a Stream<int> or null
+      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text('没有Stream');
+          case ConnectionState.waiting:
+            return Text('等待数据...');
+          case ConnectionState.active:
+            return Text('active: ${snapshot.data}');
+          case ConnectionState.done:
+            return Text('Stream已关闭');
+        }
+        return null; // unreachable
+      },
+    );
+  }
+
+  Stream<int> counter() {
+    return Stream.periodic(Duration(seconds: 1), (i) {
+      return i;
+    });
+  }
+}
+```
+
+---
+
+## 5. Model 与 JSON 的转换  
+**1\. JSON 转换 Model**
+在 Model 中编写 fromJson 方法， 如下：  
+```dart
+// Model-Class to parse JSON to Model
+class Article {
+
+  int articleId;
+  String title;
+  String author;
+  String content;
+  String updateTime;
+  int commentsLength;
+
+  Article.fromJson(Map<String, dynamic> json)
+    : articleId = json['articleId'] as int,
+      title = json['title'] as String,
+      author = json['author'] as String,
+      content = json['content'] as String,
+      updateTime = json['updateTime'] as String,
+      commentsLength = json['commentsLength'] as int;
+
+}
+
+// how to use it
+Article.fromJson(data)
+```
+
+**2\. Model 转换 JSON**  
+```dart
+// Model-Class to parse Model to JSON
+class User {
+  final String name;
+  final String email;
+
+  User(this.name, this.email);
+
+  User.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        email = json['email'];
+
+  // define toJson method
+  Map<String, dynamic> toJson() =>
+    <String, dynamic>{
+      'name': name,
+      'email': email,
+    };
+}
+// how to use it
+String json = json.encode(user)
+```
+在执行 `encode` 方法时，内部会自动执行 `toJson` 方法。
+
+**3\. 列表 Model 的转化**  
+```dart
+final List<Article> articles = resultData.data.map<Article>((data) => Article.fromJson(data)).toList();
+```

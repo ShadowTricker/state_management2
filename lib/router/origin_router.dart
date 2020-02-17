@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:state_management2/containers/bloc/bloc_app.dart';
+import 'package:state_management2/containers/origin/async_catelogue.dart';
 import 'package:state_management2/containers/origin/bloc_page.dart';
 import 'package:state_management2/containers/origin/catelogue.dart';
 import 'package:state_management2/containers/origin/downward_data_page.dart';
@@ -24,6 +25,7 @@ Map<String, WidgetBuilder> originRoutes(context) {
     '/origin/6': (context) => InheritedWidgetPage(),
     '/origin/7': (context) => EventBusPage(),
     '/origin/9': (context) => StateCateloguePage(),
+    '/origin/10': (context) => AsyncCatelogue(),
     '/origin/provider': (context) => ProviderPage(
       title: ModalRoute.of(context).settings.arguments
     ),
